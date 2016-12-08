@@ -41,15 +41,27 @@ ebs_classes <- c(
 )
 
 #------------------------------------------------------------------Logic ------
+
+#     Import Single Data Chunk
 inData01 <- read.delim(  # See Note 001
   file = paste(data_path, ebs_files[1], sep = "/"),
   header = TRUE,
   sep = ",",
-  numerals = "warn.loss",
+  dec = ".",
+  numerals = "no.loss",
   col.names = ebs_cols,
-  colClasses = ebs_classes#<<--
-)#<<<<<-----
+  colClasses = ebs_classes
+)
 
+rm(ebs_cols, ebs_classes)
+
+#     DPLYR
+require(dplyr)
+
+df01 <- inData01 %>%
+  filter(!is.na(WieseID) & WieseID != " ") %>%
+  group_by(WieseID, WorkOrder) %>%
+  summarise(num = n())#<<CURSOR
 
 #============================================================== FOOTNOTES =====
 #     Note 001
